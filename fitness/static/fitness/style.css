@@ -55,3 +55,11 @@ header h1 a:hover {
     color: #fff;
     text-decoration: none;
 }
+
+.footer {
+    padding: 20px;
+    margin-top: 20px;
+    color: #ffffff;
+    background-color: #e8491d;
+    text-align: center;
+}

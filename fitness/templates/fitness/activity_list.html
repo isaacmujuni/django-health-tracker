@@ -1,0 +1,13 @@
+{% load static %}
+<!DOCTYPE html>
+<body>
+<h1>Activity List</h1>
+<ul>
+{% for activity in activities %}
+    <li>{{ activity.activity_type }}: {{ activity.duration }}</li>
+{% empty %}
+    <li>No activities recorded.</li>
+{% endfor %}
+</ul>
+</body>
+</html>

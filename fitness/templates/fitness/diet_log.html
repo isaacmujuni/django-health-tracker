@@ -1,0 +1,14 @@
+{% load static %}
+
+<!DOCTYPE html>
+<body>
+<h1>Dietary Log</h1>
+<ul>
+{% for log in diet_logs %}
+    <li>{{ log.date_time|date:"Y-m-d" }}: {{ log.food_item }} - Calories: {{ log.calories }}</li>
+{% empty %}
+    <li>No dietary logs available.</li>
+{% endfor %}
+</ul>
+</body>
+</html>

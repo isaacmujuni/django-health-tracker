@@ -22,30 +22,29 @@ Welcome to the **Django Health and Fitness Tracker**, an intuitive and dynamic w
 
 1. **Clone the Repository**:
 
-git clone https://github.com/your-github-username/django-health-tracker.git
+``` git clone https://github.com/your-github-username/django-health-tracker.git``` 
 
-mathematica
 
 2. **Set Up a Virtual Environment**:
-
+``` 
 python -m venv env
 source env/bin/activate # On Windows use env\Scripts\activate
-
-markdown
+``` 
 
 3. **Install Dependencies**:
-
+``` 
 pip install -r requirements.txt
 
-markdown
+``` 
 
 4. **Initialize the Database**:
-
+``` 
 python manage.py makemigrations
 python manage.py migrate
+``` 
 
-markdown
 
 5. **Run the Server**:
-
+``` 
 python manage.py runserver
+``` 

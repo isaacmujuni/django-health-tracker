@@ -1,0 +1,11 @@
+{% extends 'fitness/base.html' %}
+
+{% block content %}
+<h2>{{ user.username }}'s Profile</h2>
+<p>Email: {{ user.email }}</p>
+<p>Date of Birth: {{ user_profile.date_of_birth }}</p>
+<p>Height: {{ user_profile.height }} cm</p>
+<p>Weight: {{ user_profile.weight }} kg</p>
+<p>Fitness Level: {{ user_profile.fitness_level }}</p>
+<!-- Add more fields as needed -->
+{% endblock %}

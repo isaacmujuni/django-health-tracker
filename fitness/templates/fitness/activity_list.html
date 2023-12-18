@@ -1,13 +1,12 @@
-{% load static %}
-<!DOCTYPE html>
-<body>
-<h1>Activity List</h1>
-<ul>
-{% for activity in activities %}
-    <li>{{ activity.activity_type }}: {{ activity.duration }}</li>
-{% empty %}
-    <li>No activities recorded.</li>
-{% endfor %}
-</ul>
-</body>
-</html>
+{% extends 'fitness/base.html' %}
+{% block content %}
+    <h1>Activity List</h1>
+    <ul>
+    {% for activity in activities %}
+        <li>{{ activity.activity_type }}: {{ activity.duration }}, Calories burned: {{activity.calories_burned}}, Date: {{date_time}}</li>
+    {% empty %}
+        <li>No activities recorded.</li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'add_activity' %}">Add Activity</a>
+{% endblock %}

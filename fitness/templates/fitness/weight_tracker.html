@@ -1,0 +1,50 @@
+{% extends 'fitness/base.html' %}
+
+{% block content %}
+<h2>Weight Tracker</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<canvas id="weightChart" width="400" height="200"></canvas>
+<canvas id="weightChart" width="400" height="200"></canvas>
+
+<script>
+    var ctx = document.getElementById('weightChart').getContext('2d');
+    var dataPoints = {{ weights|safe }};
+    var labels = {{ dates|safe }};
+
+    // Default point styles
+    var pointBackgroundColors = new Array(dataPoints.length).fill('rgba(0, 0, 0, 0.1)'); // Light color for all points
+    var pointBorderColors = new Array(dataPoints.length).fill('rgba(0, 0, 0, 0.1)'); // Light color for all points
+    var pointRadius = new Array(dataPoints.length).fill(3); // Smaller radius for all points
+
+    // Style for the first point (current weight)
+    if (dataPoints.length > 0) {
+        pointBackgroundColors[0] = 'rgb(255, 99, 132)'; // Highlight color
+        pointBorderColors[0] = 'rgb(255, 99, 132)'; // Highlight color
+        pointRadius[0] = 5; // Larger radius for the first point
+    }
+
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Weight Over Time',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: dataPoints,
+                pointBackgroundColor: pointBackgroundColors,
+                pointBorderColor: pointBorderColors,
+                pointRadius: pointRadius
+            }]
+        },
+        options: {}
+    });
+</script>
+
+
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class FitnessActivity(models.Model):
     ACTIVITY_CHOICES = [
@@ -15,7 +16,6 @@ class FitnessActivity(models.Model):
     intensity = models.CharField(max_length=50)  # e.g., moderate, high
     calories_burned = models.IntegerField()
     date_time = models.DateTimeField()
-
     def __str__(self):
         return f"{self.activity_type} on {self.date_time.strftime('%Y-%m-%d')}"
 
@@ -42,6 +42,7 @@ class DietaryLog(models.Model):
     Dietary Log
         Fields: user (ForeignKey to User), food item, calories, nutrients (carbs, proteins, fats), quantity, date/time of meal.
     """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     food_item = models.CharField(max_length=50)
     calories = models.IntegerField()
     carbs = models.IntegerField()
@@ -70,3 +71,11 @@ class FitnessGoal(models.Model):
 
     def __str__(self):
         return f"{self.goal_type} goal for {self.user.username}"
+
+class WeightEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    weight = models.FloatField()
+    date = models.DateField(default=timezone.now)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.weight} kg on {self.date}'

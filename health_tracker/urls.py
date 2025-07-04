@@ -22,6 +22,7 @@ from django.urls import re_path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('fitness/', include('fitness.urls')),
+    path('ai-assistant/', include('qa_agent.urls')),
     re_path(r'^$', RedirectView.as_view(url='/fitness/', permanent=True)),
 ]
 

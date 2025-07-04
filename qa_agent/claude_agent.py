@@ -5,9 +5,10 @@ import anthropic
 from django.conf import settings
 from fitness.models import FitnessActivity, DietaryLog, WeightEntry, FitnessGoal
 from django.contrib.auth.models import User
-from .tools.web_search import WebSearchTool
-from .tools.document_reader import DocumentReaderTool
-from .tools.health_analyzer import HealthAnalyzerTool
+# TODO: Implement these tools
+# from .tools.web_search import WebSearchTool
+# from .tools.document_reader import DocumentReaderTool
+# from .tools.health_analyzer import HealthAnalyzerTool
 
 
 class ClaudeQAAgent:
@@ -152,9 +153,9 @@ class ClaudeQAAgent:
     def _initialize_tool_executors(self):
         """Initialize actual tool execution classes"""
         return {
-            "search_web": WebSearchTool(),
-            "read_documents": DocumentReaderTool(),
-            "analyze_user_health_data": HealthAnalyzerTool(),
+            "search_web": self._mock_web_search,
+            "read_documents": self._mock_document_reader,
+            "analyze_user_health_data": self._mock_health_analyzer,
             "generate_health_plan": self._generate_health_plan
         }
     

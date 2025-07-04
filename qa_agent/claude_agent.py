@@ -392,6 +392,64 @@ Please analyze this question and use the appropriate tools to provide a comprehe
             "user_data_incorporated": bool(user_data),
             "research_based": bool(research_data)
         }
+    
+    async def _mock_web_search(self, **kwargs) -> Dict[str, Any]:
+        """Mock web search tool for demo purposes"""
+        query = kwargs.get('query', 'health information')
+        return {
+            "query": query,
+            "results": [
+                {"title": f"Mock result for: {query}", "url": "https://example.com", "snippet": "Mock search result content"}
+            ],
+            "status": "success"
+        }
+    
+    async def _mock_document_reader(self, **kwargs) -> Dict[str, Any]:
+        """Mock document reader tool for demo purposes"""
+        folder_path = kwargs.get('folder_path', 'documents')
+        return {
+            "folder_path": folder_path,
+            "files_processed": ["mock_document.pdf"],
+            "content_summary": f"Mock document analysis from {folder_path}",
+            "status": "success"
+        }
+    
+    async def _mock_health_analyzer(self, **kwargs) -> Dict[str, Any]:
+        """Mock health data analyzer tool for demo purposes"""
+        user_id = kwargs.get('user_id')
+        data_types = kwargs.get('data_types', ['all'])
+        
+        # Mock analysis of user's actual data
+        try:
+            if user_id:
+                from django.contrib.auth.models import User
+                user = User.objects.get(id=user_id)
+                
+                activities = FitnessActivity.objects.filter(user=user).count()
+                weight_entries = WeightEntry.objects.filter(user=user).count()
+                
+                return {
+                    "user_id": user_id,
+                    "username": user.username,
+                    "data_types": data_types,
+                    "activity_count": activities,
+                    "weight_entries": weight_entries,
+                    "analysis": f"User has {activities} activities and {weight_entries} weight entries",
+                    "status": "success"
+                }
+        except Exception as e:
+            return {
+                "user_id": user_id,
+                "error": str(e),
+                "status": "error"
+            }
+        
+        return {
+            "user_id": user_id,
+            "data_types": data_types,
+            "analysis": "Mock health data analysis",
+            "status": "success"
+        }
 
 
 # Example usage demonstrating Claude's capabilities

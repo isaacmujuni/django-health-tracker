@@ -19,12 +19,18 @@ class ClaudeQAAgent:
     - Intelligent tool selection based on context
     - Multi-step reasoning with tool chaining
     - Error handling and adaptive retry logic
+    - Real-time status updates via WebSocket
     """
     
     def __init__(self):
         self.client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
         self.tools = self._initialize_claude_tools()
         self.tool_executors = self._initialize_tool_executors()
+        self.status_callback = None  # For real-time updates
+    
+    def set_status_callback(self, callback):
+        """Set callback function for real-time status updates"""
+        self.status_callback = callback
     
     def _initialize_claude_tools(self):
         """
@@ -259,18 +265,58 @@ class ClaudeQAAgent:
         return json.dumps(tool_results)
     
     async def _execute_single_tool(self, tool_name: str, tool_input: Dict, tool_id: str) -> Any:
-        """Execute a single tool with error handling"""
+        """Execute a single tool with error handling and real-time updates"""
         try:
+            # Notify tool started
+            if self.status_callback:
+                description = self._get_tool_description(tool_name, tool_input)
+                await self.status_callback('tool_started', tool_name, description)
+            
             executor = self.tool_executors.get(tool_name)
             if not executor:
                 raise ValueError(f"Unknown tool: {tool_name}")
             
+            # Execute the tool
             if callable(executor):
-                return await executor(**tool_input)
+                result = await executor(**tool_input)
             else:
-                return await executor.execute(**tool_input)
+                result = await executor.execute(**tool_input)
+            
+            # Notify tool completed
+            if self.status_callback:
+                await self.status_callback('tool_completed', tool_name, 
+                                         self._format_tool_result(tool_name, result))
+            
+            return result
+            
         except Exception as e:
+            # Notify tool error
+            if self.status_callback:
+                await self.status_callback('tool_error', tool_name, str(e))
             return {"error": str(e), "tool": tool_name}
+    
+    def _get_tool_description(self, tool_name: str, tool_input: Dict) -> str:
+        """Get human-readable description of what the tool is doing"""
+        descriptions = {
+            'search_web': f"Searching the web for: {tool_input.get('query', 'health information')}",
+            'read_documents': f"Reading documents from: {tool_input.get('folder_path', 'specified folder')}",
+            'analyze_user_health_data': f"Analyzing your {', '.join(tool_input.get('data_types', ['health data']))}",
+            'generate_health_plan': f"Creating a {tool_input.get('plan_type', 'health')} plan for you"
+        }
+        return descriptions.get(tool_name, f"Executing {tool_name}")
+    
+    def _format_tool_result(self, tool_name: str, result: Any) -> str:
+        """Format tool result for display"""
+        if isinstance(result, dict) and result.get('error'):
+            return f"Error: {result['error']}"
+        
+        summaries = {
+            'search_web': "Found relevant health information",
+            'read_documents': "Analyzed documents successfully",
+            'analyze_user_health_data': "Completed health data analysis",
+            'generate_health_plan': "Generated personalized plan"
+        }
+        return summaries.get(tool_name, "Completed successfully")
     
     def _build_context_prompt(self, question: str, user_context: Dict = None) -> str:
         """Build a rich context prompt for Claude"""

@@ -38,7 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'fitness'
+    
+    # Third party apps
+    'channels',
+    
+    # Local apps
+    'fitness',
+    'qa_agent',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +134,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Log in URL
 LOGIN_REDIRECT_URL = 'profile'
+
+# ASGI Application for WebSocket support
+ASGI_APPLICATION = 'health_tracker.asgi.application'
+
+# Channels Layer configuration for WebSocket support
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+# Claude API Configuration
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', 'your-claude-api-key-here')
+
+# QA Agent Settings
+QA_AGENT_SETTINGS = {
+    'MAX_CONVERSATION_LENGTH': 50,
+    'TOOL_TIMEOUT_SECONDS': 30,
+    'ENABLE_WEB_SEARCH': True,
+    'ENABLE_DOCUMENT_READING': True,
+    'ENABLE_HEALTH_DATA_ANALYSIS': True,
+}
